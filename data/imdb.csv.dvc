@@ -1,3 +1,5 @@
 outs:
-- md5: <hash>
-  path: data/imdb.csv
+- md5: c8b6a72dcbdf13dfcc10b66ceae966ba
+  size: 256
+  hash: md5
+  path: imdb.csv
