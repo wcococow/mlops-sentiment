@@ -1,25 +1,19 @@
 stages:
-  preprocess:
-    cmd: python scripts/preprocess.py
-    deps:
-      - data/raw.csv
-      - scripts/preprocess.py
-    outs:
-      - data/clean.csv
-
   train:
-    cmd: python scripts/train.py
+    cmd: python src/train.py data/imdb.csv model.joblib
     deps:
-      - data/clean.csv
-      - scripts/train.py
-      - params.yaml
+      - src/train.py
+      - src/utils.py
+      - src/model.py
+      - data/imdb.csv
     outs:
-      - models/model.pkl
+      - model.joblib
+      - vectorizer.joblib
 
   evaluate:
-    cmd: python scripts/evaluate.py
+    cmd: python src/eval.py
     deps:
-      - models/model.pkl
-      - scripts/evaluate.py
-    outs:
-      - metrics.json
+      - src/eval.py
+      - model.joblib
+      - vectorizer.joblib
+      - data/imdb.csv
