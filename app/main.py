@@ -1,19 +1,16 @@
-# FastAPI serving script
 from fastapi import FastAPI
-import joblib
 from pydantic import BaseModel
+from app.inference import load_model_and_vectorizer, predict_sentiment
+
+# Load model/vectorizer once at startup
+model, vectorizer = load_model_and_vectorizer()
 
 app = FastAPI()
-
-model = joblib.load("model.joblib")
-vectorizer = joblib.load("vectorizer.joblib")
 
 class TextInput(BaseModel):
     text: str
 
 @app.post("/predict")
-def predict_sentiment(input: TextInput):
-    features = vectorizer.transform([input.text])
-    prediction = model.predict(features)
-    return {"prediction": int(prediction[0])}
-
+def predict(input_data: TextInput):
+    sentiment = predict_sentiment(input_data.text, model, vectorizer)
+    return {"text": input_data.text, "sentiment": sentiment}

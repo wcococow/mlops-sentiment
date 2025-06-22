@@ -1,41 +1,75 @@
-# 📛 Name of the workflow (shows up in GitHub Actions UI)
-name: Train and Track ML Model
+# Name of the workflow (visible in the GitHub Actions UI)
+name: Train and Deploy FastAPI ML App
 
-# 🚀 Trigger the workflow when someone pushes to the main branch
+# Trigger this workflow whenever code is pushed to the main branch
 on:
   push:
     branches: [ main ]
 
+# Define the main job
 jobs:
-  train:  # 👷 Name of the job (can be anything)
-    runs-on: ubuntu-latest  # 🖥️ Use latest Ubuntu runner from GitHub
+  train-and-deploy:
+    # Use the latest Ubuntu GitHub Actions runner
+    runs-on: ubuntu-latest
 
     steps:
-      - name: 🔄 Checkout code
-        uses: actions/checkout@v3  # ✅ Pulls your code from the GitHub repo
+      # Step 1: Checkout the repository code to the GitHub runner
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-      - name: 🐍 Set up Python
-        uses: actions/setup-python@v4  # ✅ Installs and configures Python
+      # Step 2: Set up Python 3.10 on the runner
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.10'  # 🧪 Specify Python version (match your project)
+          python-version: '3.10'
 
-      - name: 📦 Install dependencies
+      # Step 3: Install dependencies needed for training and deployment
+      - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt  # 📄 Install all project packages
-          pip install dvc[aws] mlflow      # ➕ Install DVC and MLflow explicitly
+          pip install -r requirements.txt             # Install base Python packages
+          pip install dvc[aws] mlflow boto3           # Add DVC, MLflow, AWS SDK for tracking and S3 access
 
-      - name: 🧠 Pull DVC data
-        run: dvc pull  # 📥 Pull raw/processed data from remote storage (e.g., S3)
+      # Step 4: Configure AWS credentials from GitHub Secrets
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}          # Secure AWS access key
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # Secure AWS secret
+          aws-region: us-east-1                                      # Your AWS region
 
-      - name: 🏋️ Run training pipeline
-        run: dvc repro  # 🚂 Run pipeline stages as defined in dvc.yaml
+      # Step 5: Pull training data and previous artifacts from remote DVC storage (e.g., S3)
+      - name: Pull data via DVC
+        run: dvc pull
 
-      - name: 🚀 Push updated models + metrics
+      # Step 6: Reproduce the DVC pipeline (e.g., train and evaluate model)
+      - name: Reproduce DVC pipeline
+        run: dvc repro
+
+      # Step 7: Push updated model or metrics back to remote DVC storage
+      - name: Push DVC outputs
+        run: dvc push
+
+      # Step 8: Commit changes (e.g., updated .dvc, metrics) if any were made during training
+      - name: Commit changes
         run: |
-          dvc push  # 📤 Push any new outputs (e.g., model.joblib) to remote
           git config --global user.name "GitHub Actions"
           git config --global user.email "ci@github.com"
-          git add .  # 📝 Track any updated .dvc files, metrics, or lock files
-          git commit -m "Auto: trained new model" || echo "No changes to commit"
-          git push || echo "Nothing to push"  # ⬆️ Push back to repo (non-blocking if no changes)
+          git add .
+          git commit -m "Auto: new model trained by CI" || echo "Nothing to commit"
+          git push || echo "Nothing to push"
+
+      # Step 9: Authenticate Docker with Amazon ECR
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      # Step 10: Build Docker image for FastAPI app
+      - name: Build Docker image
+        run: |
+          docker build -t fastapi-ml-app .                                               # Build image using Dockerfile in root
+          docker tag fastapi-ml-app:latest ${{ steps.login-ecr.outputs.registry }}/fastapi-ml-app:latest  # Tag image for ECR
+
+      # Step 11: Push the image to your ECR repository
+      - name: Push Docker image to ECR
+        run: |
+          docker push ${{ steps.login-ecr.outputs.registry }}/fastapi-ml-app:latest      # Upload image to ECR

@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mlflow                          # Name of the deployment
+spec:
+  replicas: 1                           # One MLflow tracking server
+  selector:
+    matchLabels:
+      app: mlflow                       # Selects pods labeled 'app: mlflow'
+  template:
+    metadata:
+      labels:
+        app: mlflow
+    spec:
+      containers:
+      - name: mlflow
+        image: mlflow/mlflow:latest     # Official MLflow Docker image
+        ports:
+        - containerPort: 5000           # MLflow UI runs on port 5000
+        env:
+        - name: MLFLOW_BACKEND_STORE_URI
+          value: sqlite:///mlflow.db    # Replace with a remote DB URI if needed
+        - name: MLFLOW_ARTIFACT_ROOT
+          value: s3://your-s3-bucket/mlflow-artifacts/  # Replace with real S3 bucket
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: aws-secrets         # Get value from secrets
+              key: AWS_ACCESS_KEY_ID
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: aws-secrets
+              key: AWS_SECRET_ACCESS_KEY

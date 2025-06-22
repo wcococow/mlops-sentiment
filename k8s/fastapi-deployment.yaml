@@ -1,0 +1,22 @@
+apiVersion: apps/v1                     # K8s API version for Deployments
+kind: Deployment                        # We're creating a Deployment
+metadata:
+  name: sentiment-api                   # Name of this Deployment resource
+spec:
+  replicas: 2                           # Number of app instances to run (for scaling)
+  selector:
+    matchLabels:
+      app: sentiment-api                # Must match the template's labels
+  template:
+    metadata:
+      labels:
+        app: sentiment-api              # Labels for this pod template
+    spec:
+      containers:
+      - name: sentiment-api             # Container name
+        image: your-dockerhub/sentiment-api:latest  # 🔁 Replace with your Docker image name
+        ports:
+        - containerPort: 8000           # Port exposed by FastAPI inside the container
+        envFrom:
+        - secretRef:
+            name: aws-secrets           # Load environment variables from K8s Secret
