@@ -1,6 +1,6 @@
 stages:
   train:
-    cmd: python src/train.py data/imdb.csv model.joblib
+    cmd: train.bat
     deps:
       - src/train.py
       - src/utils.py

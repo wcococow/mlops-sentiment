@@ -1,0 +1,22 @@
+artifact_path: file:///D:/Kate%20Downloads/ML%20Learning/Interview/mlops-sentiment/mlruns/163820420872369104/models/m-70d70669a54f4415a968a9b6f924452d/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.12.10
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.7.0
+mlflow_version: 3.1.0
+model_id: m-70d70669a54f4415a968a9b6f924452d
+model_size_bytes: 947
+model_uuid: m-70d70669a54f4415a968a9b6f924452d
+prompts: null
+run_id: 756e031b2d734d6dbf5944b75040e3a6
+utc_time_created: '2025-06-23 15:12:40.727320'

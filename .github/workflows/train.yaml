@@ -39,7 +39,7 @@ jobs:
 
       # Step 5: Pull training data and previous artifacts from remote DVC storage (e.g., S3)
       - name: Pull data via DVC
-        run: dvc pull
+        run: dvc pull --force
 
       # Step 6: Reproduce the DVC pipeline (e.g., train and evaluate model)
       - name: Reproduce DVC pipeline

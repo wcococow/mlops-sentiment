@@ -31,7 +31,9 @@ def train(path_to_data, model_output):
         mlflow.sklearn.log_model(model, "model")
 
     # Save model and vectorizer
-    os.makedirs(os.path.dirname(model_output), exist_ok=True)
+    output_dir = os.path.dirname(model_output)
+    if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
     joblib.dump(model, model_output)
     joblib.dump(vectorizer, "vectorizer.joblib")
 
@@ -46,6 +48,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if not os.path.exists(args.data):
-        raise FileNotFoundError(f"🚫 Data file not found at: {args.data}")
+        raise FileNotFoundError(f" Data file not found at: {args.data}")
 
     train(args.data, args.output)

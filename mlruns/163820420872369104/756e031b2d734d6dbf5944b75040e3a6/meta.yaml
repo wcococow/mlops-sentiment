@@ -1,0 +1,14 @@
+artifact_uri: file:///D:/Kate%20Downloads/ML%20Learning/Interview/mlops-sentiment/mlruns/163820420872369104/756e031b2d734d6dbf5944b75040e3a6/artifacts
+end_time: 1750691602478
+entry_point_name: ''
+experiment_id: '163820420872369104'
+lifecycle_stage: active
+run_id: 756e031b2d734d6dbf5944b75040e3a6
+run_name: youthful-swan-783
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1750691560377
+status: 3
+tags: []
+user_id: dell

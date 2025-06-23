@@ -1,0 +1,10 @@
+artifact_location: file:///D:/Kate%20Downloads/ML%20Learning/Interview/mlops-sentiment/mlruns/163820420872369104/models/m-4d57b070661f46db829dead3593facf3/artifacts
+creation_timestamp: 1750691779566
+experiment_id: '163820420872369104'
+last_updated_timestamp: 1750691791643
+model_id: m-4d57b070661f46db829dead3593facf3
+model_type: null
+name: model
+source_run_id: 373d8022ee2b43d28c3d449c165b1f9c
+status: 2
+status_message: null
