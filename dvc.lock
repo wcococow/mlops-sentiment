@@ -1,4 +1,49 @@
 schema: '2.0'
 stages:
   train:
-    cmd: python src/train.py
+    cmd: train.bat
+    deps:
+    - path: data/imdb.csv
+      hash: md5
+      md5: c8b6a72dcbdf13dfcc10b66ceae966ba
+      size: 256
+    - path: src/model.py
+      hash: md5
+      md5: 61bae2d89c699b8d53e648a1154d9401
+      size: 120
+    - path: src/train.py
+      hash: md5
+      md5: c919f57c06ec60f22a69720e13a358eb
+      size: 1659
+    - path: src/utils.py
+      hash: md5
+      md5: 6af9aeb527fb226de9680710f4d1ccc9
+      size: 632
+    outs:
+    - path: model.joblib
+      hash: md5
+      md5: 6b6fc0d97173d6631d1357b5342a2f8c
+      size: 1103
+    - path: vectorizer.joblib
+      hash: md5
+      md5: 4067343ec7181b72f45756e9f7555dbd
+      size: 755
+  evaluate:
+    cmd: python src/eval.py
+    deps:
+    - path: data/imdb.csv
+      hash: md5
+      md5: c8b6a72dcbdf13dfcc10b66ceae966ba
+      size: 256
+    - path: model.joblib
+      hash: md5
+      md5: 6b6fc0d97173d6631d1357b5342a2f8c
+      size: 1103
+    - path: src/eval.py
+      hash: md5
+      md5: 2c849d17202532115eef5cc0d548e3de
+      size: 21
+    - path: vectorizer.joblib
+      hash: md5
+      md5: 4067343ec7181b72f45756e9f7555dbd
+      size: 755
