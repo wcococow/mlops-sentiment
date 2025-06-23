@@ -5,3 +5,4 @@ mlflow
 fastapi
 uvicorn
 dvc
+dvc[s3]
