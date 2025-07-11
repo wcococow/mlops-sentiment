@@ -67,7 +67,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t mlops .                                               # Build image using Dockerfile in root
-          docker tag fastapi-ml-app:latest ${{ steps.login-ecr.outputs.registry }}/fastapi-ml-app:latest  # Tag image for ECR
+          docker tag mlops:latest ${{ steps.login-ecr.outputs.registry }}/mlops:latest  # Tag image for ECR
 
       # Step 11: Push the image to your ECR repository
       - name: Push Docker image to ECR
