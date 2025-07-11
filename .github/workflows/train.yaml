@@ -59,7 +59,7 @@ jobs:
           git push || echo "Nothing to push"
 
       # Step 9: Authenticate Docker with Amazon ECR
-      - name: Log in to Amazon ECR
+      - name: mlops
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
